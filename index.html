@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小鹅五子棋</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script> 
+    <link href="https://s2.ssl.qhres2.com/static/56662140ef7d5d03.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-menu" id="mainMenu">
+        <div class="main-menu-title">
+            小鹅五子棋
+        </div>
+        <div class="game-mode-buttons">
+            <button class="game-mode-btn" id="pvpMode">
+                <div class="mode-icon">
+                    <i class="fas fa-user-vs-user"></i>
+                </div>
+                <div class="mode-text">
+                    <h3>人机对战</h3>
+                    <p>来呀，单挑😉</p>
+                </div>
+            </button>
+        </div>
+        <button class="donate-btn" id="donateButton">
+            <div class="donate-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="donate-text">
+                打赏作者
+            </div>
+        </button>
+    </div>
+    
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <div class="seal">弈</div>
+            <span>小鹅五子棋</span>
+        </div>
+        <div class="navbar-status" id="gameStatus">选择游戏模式</div>
+        <div class="navbar-menu">
+            <button class="back-to-menu" id="backToMenu" title="返回主菜单">
+                <i class="fas fa-home"></i>
+            </button>
+            
+            <div class="navbar-item">
+                <button class="navbar-button" id="settingsButton" title="设置">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="dropdown" id="settingsDropdown">
+                    <div class="dropdown-content">
+                        <div class="dropdown-group">
+                            <label for="boardSize">棋盘大小:</label>
+                            <select id="boardSize">
+                                <option value="9">9×9 棋盘 (新手)</option>
+                                <option value="13">13×13 棋盘 (进阶)</option>
+                                <option value="19" selected>19×19 棋盘 (标准)</option>
+                            </select>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-group">
+                            <label for="aiLevel">AI 难度:</label>
+                            <select id="aiLevel">
+                                <option value="1">简单</option>
+                                <option value="2">中等</option>
+                                <option value="3" selected>困难</option>
+                                <option value="4">专家</option>
+                                <option value="5">大师</option>
+                                <option value="6">地狱</option>
+                                <option value="7">DeepSeek AI</option>
+                            </select>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-group">
+                            <label for="deepseekApiKey">DeepSeek API密钥:</label>
+                            <input type="password" id="deepseekApiKey" placeholder="输入DeepSeek API密钥" style="width: 100%; padding: 0.3rem; border: 1px solid var(--text-color); border-radius: 4px; background-color: var(--bg-color); color: var(--text-color); font-family: inherit;">
+                            <div class="api-info" style="font-size: 0.7rem; color: #666; margin-top: 0.2rem;">
+                                在 <a href="https://platform.deepseek.com/" target="_blank" style="color: var(--accent-color);">DeepSeek平台</a> 获取API密钥
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="background-selector-container">
+                            <div class="background-selector-label">棋盘背景:</div>
+                            <div class="background-options" id="backgroundOptions">
+                            </div>
+                            <div class="custom-background-upload" id="customBackgroundUpload">
+                                <div class="custom-background-upload-label">
+                                    <i class="fas fa-upload"></i> 上传自定义背景
+                                </div>
+                                <input type="file" id="backgroundFileInput" accept="image/*" style="display: none;">
+                            </div>
+                            <div class="custom-background-remove" id="removeCustomBackground" style="display: none;">
+                                移除自定义背景
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <span>G</span><span>O</span><span>O</span><span>S</span><span>E</span>
+        </div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在加载游戏资源...</div>
+    </div>
+    
+    <div class="game-notification" id="gameNotification">
+        <div class="notification-content">
+            <h2 class="notification-title">游戏公告</h2>
+            <div class="notification-version">版本: 2.5.4 | 2026年1月10日</div>
+            
+            <div class="notification-tabs">
+                <button class="notification-tab active" data-tab="welcome">你好呀(｡･∀･)ﾉﾞHi</button>
+                <button class="notification-tab" data-tab="updates">更新日志</button>
+            </div>
+            
+            <div class="notification-panel active" id="welcomePanel">
+                <div class="notification-body">
+                    <p>小鹅五子棋v2.5.4更新：</p>
+                    <ul>
+                        <li><strong>新增DeepSeek AI模式</strong>：接入了DeepSeek AI</li>
+                        <li><strong>丢失了什么...</strong>：简化了主菜单，移除了AI对战AI模式</li>
+                        <li><strong>AI算法改进</strong>：增强了本地AI的战术评估能力</li>
+                        <li><strong>API密钥支持</strong>：现在可以保存和使用DeepSeek API密钥</li>
+                        <li><strong>特别感谢</strong>：感谢<strong>氧氧</strong>的测试</li>
+                    </ul>
+                    <p>--by Minecraft_goose</p>
+                </div>
+            </div>
+            
+            <div class="notification-panel" id="updatesPanel">
+                <div class="notification-body">
+                    <div class="notification-update-list">
+                        <div class="notification-update-item">
+                            <div class="notification-update-version">版本 2.5.4 (2026年1月10日)</div>
+                            <div class="notification-update-content">
+                                <ul>
+                                    <li><strong>新增DeepSeek AI集成</strong>：在难度等级7新增DeepSeek AI支持</li>
+                                    <li><strong>简化游戏模式</strong>：移除了AI对战AI模式，专注于人机对战体验</li>
+                                    <li><strong>新增API密钥管理</strong>：支持保存和使用DeepSeek API密钥</li>
+                                    <li><strong>改进本地AI算法</strong>：增强了战术评估和开局库</li>
+                                    <li><strong>优化用户界面</strong>：更新设置面板，添加API密钥输入区域</li>
+                                    <li><strong>修复已知问题</strong>：解决了一些界面和逻辑问题</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="notification-update-item">
+                            <div class="notification-update-version">版本 2.5.3 (2026年1月7日)</div>
+                            <div class="notification-update-content">
+                                <ul>
+                                    <li><strong>新增主菜单界面</strong>：提供两种游戏模式选择</li>
+                                    <li><strong>新增AI对战AI模式</strong>：可以观看两个AI之间的对弈</li>
+                                    <li><strong>新增游戏控制面板</strong>：包含开始/暂停、单步、速度控制等功能</li>
+                                    <li><strong>新增返回主菜单按钮</strong>：随时可以返回主菜单选择其他模式</li>
+                                    <li><strong>新增棋盘缩放功能</strong>：支持放大、缩小和重置棋盘</li>
+                                    <li><strong>优化界面布局</strong>：更好的响应式设计</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="notification-update-item">
+                            <div class="notification-update-version">版本 2.5.0 (2026年1月1日)</div>
+                            <div class="notification-update-content">
+                                <ul>
+                                    <li><strong>新增棋盘背景选择</strong>：支持多种预设背景和自定义背景</li>
+                                    <li><strong>新增自定义背景功能</strong>：可以上传自己的图片作为棋盘背景</li>
+                                    <li><strong>增强AI算法</strong>：改进AI决策逻辑，提高游戏挑战性</li>
+                                    <li><strong>优化界面设计</strong>：改进视觉效果和用户体验</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="notification-update-item">
+                            <div class="notification-update-version">早期版本</div>
+                            <div class="notification-update-content">
+                                因代码量过大，已删除
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="close-notification" id="closeNotification">开始游戏</button>
+        </div>
+    </div>
+    
+    <div class="container hidden" id="gameContainer">
+        <div class="game-container">
+            <div class="board-container">
+                <div class="go-board" id="goBoard">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="donate-modal" id="donateModal">
+        <div class="donate-modal-content">
+            <div class="donate-modal-header">
+                <h3>感谢支持！</h3>
+                <button class="close-donate-modal" id="closeDonateModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="donate-modal-body">
+                <p>如果这个游戏给您带来了快乐，可以请我喝杯咖啡☕</p>
+                <div class="qrcode-container">
+                    <img src="donate.png" alt="付款码" class="qrcode-image" id="qrcodeImage">
+                    <div class="qrcode-placeholder" id="qrcodePlaceholder">
+                        <i class="fas fa-qrcode"></i>
+                        <span>付款码图片未找到</span>
+                    </div>
+                </div>
+                <div class="donate-info">
+                    <p><i class="fas fa-coffee"></i> 每一份支持都是我继续开发的动力</p>
+                </div>
+            </div>
+            <div class="donate-modal-footer">
+                <p class="donate-thanks">—— 感谢您支持小鹅五子棋 ——</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="watermark">小鹅五子棋 · 2026</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
